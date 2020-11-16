@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { ApolloError } from '@apollo/client/errors';
 import FamilyMember from './member/family-member.component';
-import { GET_FAMILY, GET_FAMILY_family_members } from './__generated__/GET_FAMILY';
+import { GetFamily, GetFamily_family_members } from './__generated__/GetFamily';
 
 type FamilyProps = {
-    data: GET_FAMILY;
+    data: GetFamily;
     loading: boolean;
     error?: ApolloError;
-    onRemove?: (member: GET_FAMILY_family_members) => void;
-    onUpdate?: (member: GET_FAMILY_family_members) => void;
+    onRemove?: (member: GetFamily_family_members) => void;
+    onUpdate?: (member: GetFamily_family_members) => void;
 };
 
 const Family = memo<FamilyProps>(({ data, loading, error, onRemove, onUpdate }) => {

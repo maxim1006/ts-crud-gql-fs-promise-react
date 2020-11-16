@@ -3,12 +3,12 @@ import { gql, Reference, useMutation, useQuery } from '@apollo/client';
 import Family from './family.component';
 import { commonUtilsOmitTypeName } from '../../common.utils';
 import CreateFamilyMember from './create-member/create-family-member.component';
-import { GET_FAMILY, GET_FAMILY_family_members } from './__generated__/GET_FAMILY';
+import { GetFamily, GetFamily_family_members } from './__generated__/GetFamily';
 
 type FamilyContainerProps = {};
 
-export const GET_FAMILY_GQL = gql`
-    query GET_FAMILY_GQL {
+export const GET_FAMILY = gql`
+    query GetFamily {
         family {
             members {
                 id
@@ -69,20 +69,20 @@ const CREATE_FAMILY_MEMBER = gql`
 `;
 
 const FamilyContainer = memo<FamilyContainerProps>(() => {
-    const { data, loading, error } = useQuery<GET_FAMILY>(
-        GET_FAMILY_GQL
+    const { data, loading, error } = useQuery<GetFamily>(
+        GET_FAMILY
     );
 
     const [
-        createMember,
+        createMember
     ] = useMutation(CREATE_FAMILY_MEMBER, {
         update(cache, { data: { createFamilyMember } }) {
             cache.modify({
                 fields: {
                     family(existingCommentRefs) {
-                        // add all family that get from BE to cache
+                        // all problems because be returns all members, if with one fragment it is ok
                         cache.writeQuery({
-                            query: GET_FAMILY_GQL,
+                            query: GET_FAMILY,
                             data: {
                                 family: createFamilyMember,
                             },
@@ -123,14 +123,14 @@ const FamilyContainer = memo<FamilyContainerProps>(() => {
     );
 
     const onUpdate = useCallback(
-        (member: GET_FAMILY_family_members) => {
+        (member: GetFamily_family_members) => {
             updateMember({ variables: { input: commonUtilsOmitTypeName(member) } });
         },
         [updateMember]
     );
 
     const onRemove = useCallback(
-        (member: GET_FAMILY_family_members) => {
+        (member: GetFamily_family_members) => {
             removeMember({ variables: { id: member.id } });
         },
         [removeMember]
