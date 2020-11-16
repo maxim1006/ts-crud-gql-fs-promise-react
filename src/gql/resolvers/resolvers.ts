@@ -32,7 +32,7 @@ export const resolvers = {
                 age: number;
             }
         ): Promise<{
-            members?: FamilyMemberModel[];
+            member?: FamilyMemberModel;
             errors?: [ErrorModel];
         }> => {
             const path = 'data/family.json';
@@ -63,7 +63,7 @@ export const resolvers = {
                 await writeFileJSON(path, members);
 
                 return {
-                    members,
+                    member,
                 };
             } catch (error) {
                 return {

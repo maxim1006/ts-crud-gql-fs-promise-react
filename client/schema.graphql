@@ -12,6 +12,11 @@ enum CacheControlScope {
   PRIVATE
 }
 
+type CreateFamilyMember {
+  member: FamilyMember!
+  errors: [Error]
+}
+
 type DeleteFamilyMember {
   deleted: Boolean!
   id: String!
@@ -41,7 +46,7 @@ input FamilyMemberInput {
 }
 
 type Mutation {
-  createFamilyMember(name: String!, age: Int!): Family
+  createFamilyMember(name: String!, age: Int!): CreateFamilyMember
   updateFamilyMember(input: FamilyMemberInput): Family
   deleteFamilyMember(id: String!): DeleteFamilyMember
 }

@@ -29,12 +29,17 @@ export const typeDefs = gql`
         errors: [Error]
     }
 
+    type CreateFamilyMember {
+        member: FamilyMember!
+        errors: [Error]
+    }
+
     type Query {
         family: Family
     }
 
     type Mutation {
-        createFamilyMember(name: String!, age: Int!): Family
+        createFamilyMember(name: String!, age: Int!): CreateFamilyMember
         updateFamilyMember(input: FamilyMemberInput): Family
         deleteFamilyMember(id: String!): DeleteFamilyMember
     }

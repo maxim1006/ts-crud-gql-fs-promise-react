@@ -4,6 +4,7 @@ import Family from './family.component';
 import { commonUtilsOmitTypeName } from '../../common.utils';
 import CreateFamilyMember from './create-member/create-family-member.component';
 import { GetFamily, GetFamily_family_members } from './__generated__/GetFamily';
+import { cache } from '../../gql/gql';
 
 type FamilyContainerProps = {};
 
@@ -55,7 +56,7 @@ const UPDATE_FAMILY_MEMBER = gql`
 const CREATE_FAMILY_MEMBER = gql`
     mutation CreateFamilyMember($name: String!, $age: Int!) {
         createFamilyMember(name: $name, age: $age) {
-            members {
+            member {
                 id
                 age
                 name
@@ -76,19 +77,36 @@ const FamilyContainer = memo<FamilyContainerProps>(() => {
     const [
         createMember
     ] = useMutation(CREATE_FAMILY_MEMBER, {
+
+        // onCompleted({ createFamilyMember }) {
+        //     console.log("onCompleted createFamilyMember ", createFamilyMember);
+        //     cache.writeQuery({
+        //         query: GET_FAMILY,
+        //         data: {
+        //             family: createFamilyMember,
+        //         },
+        //     });
+        // },
+        // the same as above
         update(cache, { data: { createFamilyMember } }) {
             cache.modify({
                 fields: {
                     family(existingCommentRefs) {
-                        // all problems because be returns all members, if with one fragment it is ok
-                        cache.writeQuery({
-                            query: GET_FAMILY,
-                            data: {
-                                family: createFamilyMember,
-                            },
+                        const newFamilyMemberRef = cache.writeFragment({
+                            data: createFamilyMember.member,
+                            fragment: gql`
+                                fragment NewFamilyMember on FamilyMember {
+                                    id
+                                    name
+                                    age
+                                }
+                            `
                         });
 
-                        return existingCommentRefs;
+                        return {
+                            ...existingCommentRefs,
+                            members: [...existingCommentRefs.members, newFamilyMemberRef]
+                        };
                     },
                 },
             });
