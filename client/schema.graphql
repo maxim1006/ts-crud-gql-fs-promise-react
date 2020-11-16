@@ -1,0 +1,55 @@
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+# Exposes a URL that specifies the behaviour of this scalar.
+directive @specifiedBy(
+  # The URL that specifies the behaviour of this scalar.
+  url: String!
+) on SCALAR
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+type DeleteFamilyMember {
+  deleted: Boolean!
+  id: String!
+  errors: [Error]
+}
+
+type Error {
+  message: String
+  field: String
+}
+
+type Family {
+  members: [FamilyMember]
+  errors: [Error]
+}
+
+type FamilyMember {
+  name: String!
+  age: Float!
+  id: String!
+}
+
+input FamilyMemberInput {
+  name: String!
+  age: Float!
+  id: String!
+}
+
+type Mutation {
+  createFamilyMember(name: String!, age: Int!): Family
+  updateFamilyMember(input: FamilyMemberInput): Family
+  deleteFamilyMember(id: String!): DeleteFamilyMember
+}
+
+type Query {
+  family: Family
+}
+
+# The `Upload` scalar type represents a file upload.
+scalar Upload
+

@@ -1,0 +1,20 @@
+{
+  "name": "ts-crud-gql-fs-promise-react",
+  "version": "1.0.0",
+  "description": "Example of TS GQL FS.promise CRUD",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon ./dist/index.js"
+  },
+  "author": "Max Maximov",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.14.6",
+    "apollo-server-express": "^2.19.0",
+    "express": "^4.17.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  }
+}
