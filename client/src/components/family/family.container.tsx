@@ -11,6 +11,7 @@ type FamilyContainerProps = {};
 export const GET_FAMILY = gql`
     query GetFamily {
         family {
+            id
             members {
                 id
                 age
@@ -27,8 +28,12 @@ export const GET_FAMILY = gql`
 const DELETE_FAMILY_MEMBER = gql`
     mutation DeleteFamilyMember($id: String!) {
         deleteFamilyMember(id: $id) {
-            deleted
             id
+            members {
+                id
+                age
+                name
+            }
             errors {
                 message
                 field
@@ -40,6 +45,7 @@ const DELETE_FAMILY_MEMBER = gql`
 const UPDATE_FAMILY_MEMBER = gql`
     mutation UpdateFamilyMember($input: FamilyMemberInput!) {
         updateFamilyMember(input: $input) {
+            id
             members {
                 id
                 age
@@ -56,14 +62,15 @@ const UPDATE_FAMILY_MEMBER = gql`
 const CREATE_FAMILY_MEMBER = gql`
     mutation CreateFamilyMember($name: String!, $age: Int!) {
         createFamilyMember(name: $name, age: $age) {
-            member {
+            id
+            members {
                 id
                 age
                 name
             }
             errors {
-                field
                 message
+                field
             }
         }
     }
@@ -74,63 +81,9 @@ const FamilyContainer = memo<FamilyContainerProps>(() => {
         GET_FAMILY
     );
 
-    const [
-        createMember
-    ] = useMutation(CREATE_FAMILY_MEMBER, {
-
-        // onCompleted({ createFamilyMember }) {
-        //     console.log("onCompleted createFamilyMember ", createFamilyMember);
-        //     cache.writeQuery({
-        //         query: GET_FAMILY,
-        //         data: {
-        //             family: createFamilyMember,
-        //         },
-        //     });
-        // },
-        // the same as above
-        update(cache, { data: { createFamilyMember } }) {
-            cache.modify({
-                fields: {
-                    family(existingCommentRefs) {
-                        const newFamilyMemberRef = cache.writeFragment({
-                            data: createFamilyMember.member,
-                            fragment: gql`
-                                fragment NewFamilyMember on FamilyMember {
-                                    id
-                                    name
-                                    age
-                                }
-                            `
-                        });
-
-                        return {
-                            ...existingCommentRefs,
-                            members: [...existingCommentRefs.members, newFamilyMemberRef]
-                        };
-                    },
-                },
-            });
-        },
-    });
-    const [removeMember] = useMutation(DELETE_FAMILY_MEMBER, {
-        update(cache, { data: { deleteFamilyMember } }) {
-            cache.modify({
-                fields: {
-                    family(existingCommentRefs, { readField }) {
-                        const members = existingCommentRefs.members.filter((i: Reference) => {
-                            return readField('id', i) !== deleteFamilyMember.id;
-                        });
-
-                        return {
-                            ...existingCommentRefs,
-                            members,
-                        };
-                    },
-                },
-            });
-        },
-    });
-
+    // квери и мутации теперь смотрят на одну и ту же сущность, и автоматически синхронизируются
+    const [createMember] = useMutation(CREATE_FAMILY_MEMBER);
+    const [removeMember] = useMutation(DELETE_FAMILY_MEMBER);
     const [updateMember] = useMutation(UPDATE_FAMILY_MEMBER);
 
     const onCreate = useCallback(
