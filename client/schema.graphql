@@ -12,23 +12,14 @@ enum CacheControlScope {
   PRIVATE
 }
 
-type CreateFamilyMember {
-  member: FamilyMember!
-  errors: [Error]
-}
-
-type DeleteFamilyMember {
-  deleted: Boolean!
-  id: String!
-  errors: [Error]
-}
-
 type Error {
   message: String
   field: String
 }
 
+# добавил айди, пока стабовое, т.к. кэш его использует, чтобы резолвить сущности по референсам
 type Family {
+  id: String
   members: [FamilyMember]
   errors: [Error]
 }
@@ -45,10 +36,11 @@ input FamilyMemberInput {
   id: String!
 }
 
+# Все мутации возвращают один тип, так что в кеше они бдудут ссылаться на одну сущность
 type Mutation {
-  createFamilyMember(name: String!, age: Int!): CreateFamilyMember
+  createFamilyMember(name: String!, age: Int!): Family
   updateFamilyMember(input: FamilyMemberInput): Family
-  deleteFamilyMember(id: String!): DeleteFamilyMember
+  deleteFamilyMember(id: String!): Family
 }
 
 type Query {

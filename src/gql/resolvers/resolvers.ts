@@ -2,9 +2,12 @@ import { readFileJSON, writeFileJSON } from '../../utils/fs-utils';
 import { ErrorModel } from '../../models/error.model';
 import { FamilyMemberModel } from '../../models/family.model';
 
+const STUB_ID = 'STUB_ID'
+
 export const resolvers = {
     Query: {
         family: async (): Promise<{
+            id: string,
             members?: FamilyMemberModel[];
             errors?: [ErrorModel];
         }> => {
@@ -12,10 +15,12 @@ export const resolvers = {
                 const members = await readFileJSON('data/family.json');
 
                 return {
+                    id: STUB_ID,
                     members,
                 };
             } catch (error) {
                 return {
+                    id: STUB_ID,
                     errors: [{ field: 'family', message: `Query family error ${error.message}` }],
                 };
             }
@@ -32,19 +37,22 @@ export const resolvers = {
                 age: number;
             }
         ): Promise<{
-            member?: FamilyMemberModel;
+            id: string,
+            members?: FamilyMemberModel;
             errors?: [ErrorModel];
         }> => {
             const path = 'data/family.json';
 
             if (!name) {
                 return {
+                    id: STUB_ID,
                     errors: [{ field: 'addFamilyMember', message: `No name input provided` }],
                 };
             }
 
             if (!age) {
                 return {
+                    id: STUB_ID,
                     errors: [{ field: 'addFamilyMember', message: `No age input provided` }],
                 };
             }
@@ -63,10 +71,12 @@ export const resolvers = {
                 await writeFileJSON(path, members);
 
                 return {
-                    member,
+                    id: STUB_ID,
+                    members,
                 };
             } catch (error) {
                 return {
+                    id: STUB_ID,
                     errors: [{ field: 'addFamilyMember', message: `Mutation addFamilyMember error ${error.message}` }],
                 };
             }
@@ -79,6 +89,7 @@ export const resolvers = {
                 input: FamilyMemberModel;
             }
         ): Promise<{
+            id: string,
             members?: FamilyMemberModel[];
             errors?: [ErrorModel];
         }> => {
@@ -89,6 +100,7 @@ export const resolvers = {
 
                 if (!Array.isArray(members)) {
                     return {
+                        id: STUB_ID,
                         errors: [
                             {
                                 field: 'updateFamilyMember',
@@ -102,6 +114,7 @@ export const resolvers = {
 
                 if (!isMember) {
                     return {
+                        id: STUB_ID,
                         errors: [
                             {
                                 field: 'updateFamilyMember',
@@ -116,10 +129,12 @@ export const resolvers = {
                 await writeFileJSON(path, members);
 
                 return {
+                    id: STUB_ID,
                     members,
                 };
             } catch (error) {
                 return {
+                    id: STUB_ID,
                     errors: [
                         { field: 'updateFamilyMember', message: `Mutation updateFamilyMember error ${error.message}` },
                     ],
@@ -134,8 +149,8 @@ export const resolvers = {
                 id: string;
             }
         ): Promise<{
-            deleted?: boolean;
-            id?: string;
+            id: string,
+            members?: FamilyMemberModel[];
             errors?: [ErrorModel];
         }> => {
             const path = 'data/family.json';
@@ -148,11 +163,12 @@ export const resolvers = {
                 await writeFileJSON(path, members);
 
                 return {
-                    id,
-                    deleted: true,
+                    id: STUB_ID,
+                    members,
                 };
             } catch (error) {
                 return {
+                    id: STUB_ID,
                     errors: [
                         { field: 'deleteFamilyMember', message: `Mutation deleteFamilyMember error ${error.message}` },
                     ],
