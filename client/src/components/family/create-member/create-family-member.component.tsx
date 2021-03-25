@@ -1,8 +1,6 @@
 import React, { memo, useRef, useState } from 'react';
+import { CreateFamilyMemberProps } from './types';
 
-type CreateFamilyMemberProps = {
-    onCreate: (member: { name: string; age: number }) => void;
-};
 
 const CreateFamilyMember = memo<CreateFamilyMemberProps>(({ onCreate }) => {
     const [error, setError] = useState<boolean>(false);

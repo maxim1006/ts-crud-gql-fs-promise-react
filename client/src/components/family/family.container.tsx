@@ -1,10 +1,12 @@
 import React, { memo, useCallback } from 'react';
-import { gql, Reference, useMutation, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Family from './family.component';
 import { commonUtilsOmitTypeName } from '../../common.utils';
 import CreateFamilyMember from './create-member/create-family-member.component';
 import { GetFamily, GetFamily_family_members } from './__generated__/GetFamily';
-import { cache } from '../../gql/gql';
+import { LoaderComponent } from '../common/loader.component';
+import { ErrorComponent } from '../common/error.component';
+import { NotFoundComponent } from '../common/not-found.component';
 
 type FamilyContainerProps = {};
 
@@ -107,9 +109,9 @@ const FamilyContainer = memo<FamilyContainerProps>(() => {
         [removeMember]
     );
 
-    if (loading) return <>Loading...</>;
-    if (error) return <p>ERROR</p>;
-    if (!data) return <p>Not found</p>;
+    if (loading) return <LoaderComponent/>;
+    if (error) return <ErrorComponent />;
+    if (!data) return <NotFoundComponent />;
 
     return (
         <>
