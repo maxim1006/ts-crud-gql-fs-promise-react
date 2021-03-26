@@ -1,20 +1,15 @@
 import React, { memo } from 'react';
-import { ApolloError } from '@apollo/client/errors';
+import { ErrorComponent } from '../common/error.component';
+import { LoaderComponent } from '../common/loader.component';
+import { NotFoundComponent } from '../common/not-found.component';
 import FamilyMember from './member/family-member.component';
-import { GetFamily, GetFamily_family_members } from './__generated__/GetFamily';
-
-type FamilyProps = {
-    data: GetFamily;
-    loading: boolean;
-    error?: ApolloError;
-    onRemove?: (member: GetFamily_family_members) => void;
-    onUpdate?: (member: GetFamily_family_members) => void;
-};
+import { FamilyProps } from './types';
 
 const Family = memo<FamilyProps>(({ data, loading, error, onRemove, onUpdate }) => {
-    if (loading) return <>Loading...</>;
-    if (error) return <p>ERROR</p>;
-    if (!data) return <p>Not found</p>;
+
+    if (loading) return <LoaderComponent/>;
+    if (error) return <ErrorComponent />;
+    if (!data) return <NotFoundComponent />;
 
     return (
         <>

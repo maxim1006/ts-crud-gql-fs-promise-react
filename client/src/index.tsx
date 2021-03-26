@@ -1,30 +1,12 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import App from './components/app/app.component';
-import { ApolloProvider, useQuery } from '@apollo/client';
-import { client } from './gql/gql';
-import { gql } from '@apollo/client';
-
-export const IS_LOGGED_IN = gql`
-    query IsUserLoggedIn {
-        isLoggedIn @client
-    }
-`;
-
-function IsLoggedIn() {
-    const { data } = useQuery(IS_LOGGED_IN);
-    return data.isLoggedIn ? <App /> : <>Login Page</>;
-}
+import { AppContainer } from './components/app/app.container';
 
 ReactDOM.render(
     // <React.StrictMode>
-    <Suspense fallback={'Loading...'}>
-        <ApolloProvider client={client}>
-            <IsLoggedIn />
-        </ApolloProvider>
-    </Suspense>,
+    <AppContainer />,
     // </React.StrictMode>,
     document.getElementById('root')
 );
